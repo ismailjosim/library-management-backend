@@ -5,6 +5,7 @@ import mongoose from 'mongoose'
 import cors from 'cors'
 import StatusCode from './utils/StatusCode'
 import { BookRoutes } from './routes/bookRoutes'
+import { BorrowRoutes } from './routes/borrowRoutes'
 
 const app = express()
 const port = process.env.PORT || 5000
@@ -24,7 +25,7 @@ app.get('/', (_, res: Response) => {
 
 // routes
 app.use('/api/v1/books', BookRoutes)
-// app.use('/api/v1/borrow', require('./routes/borrowRoutes'))
+app.use('/api/v1/borrow', BorrowRoutes)
 
 // 404 route for unknown endpoints
 app.use((req: Request, res: Response) => {

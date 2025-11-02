@@ -1,6 +1,6 @@
-import { Schema, Document, model } from 'mongoose'
+import { Schema, model } from 'mongoose'
 
-export enum Genre {
+export enum IGenre {
 	FICTION = 'FICTION',
 	NON_FICTION = 'NON_FICTION',
 	SCIENCE = 'SCIENCE',
@@ -12,7 +12,7 @@ export enum Genre {
 export interface IBook {
 	title: string
 	author: string
-	genre: Genre
+	genre: IGenre
 	isbn: string
 	description?: string
 	copies: number
@@ -26,7 +26,7 @@ const bookSchema = new Schema<IBook>(
 		genre: {
 			type: String,
 			required: true,
-			enum: Object.values(Genre),
+			enum: Object.values(IGenre),
 		},
 		isbn: { type: String, required: true, unique: true },
 		description: { type: String },
@@ -36,7 +36,7 @@ const bookSchema = new Schema<IBook>(
 	{ timestamps: true, versionKey: false },
 )
 
-// Instance method to borrow copies
+//  instance method
 bookSchema.methods.borrowCopies = async function (quantity: number) {
 	if (this.copies < quantity) throw new Error('Not enough copies available')
 	this.copies -= quantity
@@ -44,4 +44,4 @@ bookSchema.methods.borrowCopies = async function (quantity: number) {
 	await this.save()
 }
 
-export const BookModel = model<IBook>('Books', bookSchema)
+export const BookModel = model<IBook>('Book', bookSchema)

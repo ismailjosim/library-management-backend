@@ -1,7 +1,7 @@
-import mongoose, { ObjectId, Schema } from 'mongoose'
+import mongoose, { ObjectId, Schema, Types } from 'mongoose'
 
 export interface IBorrow {
-	book: ObjectId
+	book: Types.ObjectId
 	quantity: number
 	dueDate: Date
 }
