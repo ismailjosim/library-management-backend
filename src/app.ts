@@ -4,6 +4,7 @@ import type { Request, Response, NextFunction } from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import StatusCode from './utils/StatusCode'
+import { BookRoutes } from './routes/bookRoutes'
 
 const app = express()
 const port = process.env.PORT || 5000
@@ -13,7 +14,7 @@ app.use(cors())
 app.use(express.json())
 
 // default route
-app.get('/', (req: Request, res: Response) => {
+app.get('/', (_, res: Response) => {
 	res.status(StatusCode.OK).json({
 		success: true,
 		message: 'Welcome to the Library Management API',
@@ -22,7 +23,7 @@ app.get('/', (req: Request, res: Response) => {
 })
 
 // routes
-// app.use('/api/v1/books', require('./routes/bookRoutes'))
+app.use('/api/v1/books', BookRoutes)
 // app.use('/api/v1/borrow', require('./routes/borrowRoutes'))
 
 // 404 route for unknown endpoints
