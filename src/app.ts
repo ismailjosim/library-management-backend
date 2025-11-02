@@ -1,7 +1,9 @@
 require('dotenv').config()
-import express, { Request } from 'express'
+import express from 'express'
+import type { Request, Response, NextFunction } from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
+import StatusCode from './utils/StatusCode'
 
 const app = express()
 const port = process.env.PORT || 5000
@@ -10,10 +12,36 @@ const port = process.env.PORT || 5000
 app.use(cors())
 app.use(express.json())
 
+// default route
+app.get('/', (req: Request, res: Response) => {
+	res.status(StatusCode.OK).json({
+		success: true,
+		message: 'Welcome to the Library Management API',
+		data: null,
+	})
+})
+
 // routes
-app.use('/api/v1/books')
-app.use('/api/v1/borrow')
-app.use((err: any, req: Request) => {})
+// app.use('/api/v1/books', require('./routes/bookRoutes'))
+// app.use('/api/v1/borrow', require('./routes/borrowRoutes'))
+
+// 404 route for unknown endpoints
+app.use((req: Request, res: Response) => {
+	res.status(StatusCode.NOT_FOUND).json({
+		success: false,
+		message: 'Route not found',
+		error: '404 Not Found',
+	})
+})
+
+// global error handler
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+	res.status(StatusCode.BAD_REQUEST).json({
+		message: err.message || 'Something went wrong',
+		success: false,
+		error: err,
+	})
+})
 
 mongoose
 	.connect(process.env.MONGO_URI!)
