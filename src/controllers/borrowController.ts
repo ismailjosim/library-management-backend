@@ -46,7 +46,44 @@ const createBorrowBook = async (
 		next(error)
 	}
 }
+const borrowedSummary = async (
+	req: Request,
+	res: Response,
+	next: NextFunction,
+) => {
+	try {
+		const result = await BorrowModel.aggregate([
+			{ $group: { _id: '$book', totalQuantity: { $sum: '$quantity' } } },
+			{
+				$lookup: {
+					from: 'books',
+					localField: '_id',
+					foreignField: '_id',
+					as: 'book',
+				},
+			},
+			{
+				$unwind: '$book',
+			},
+			{
+				$project: {
+					totalQuantity: 1,
+					book: { title: '$book.title', isbn: '$book.isbn' },
+				},
+			},
+		])
+
+		return res.status(StatusCode.OK).json({
+			success: true,
+			message: 'Book Borrowed successfully',
+			data: result,
+		})
+	} catch (error) {
+		next(error)
+	}
+}
 
 export const BorrowController = {
 	createBorrowBook,
+	borrowedSummary,
 }
